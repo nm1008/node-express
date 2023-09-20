@@ -2,7 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
-const Product = require("./models/productModel")
+const Product = require("./models/productModel");
 
 //DB URL from dotenv so that the server can connect to mongoDB
 const uri = process.env.DB;
@@ -20,43 +20,58 @@ app.get("/", (req, res) => {
   res.send("Hi");
 });
 
-
 //Get all products from the database (find())
-app.get("/product", async(req, res) => {
-    try {
-        const products = await Product.find({});
-        res.status(200).json(products)
-        
-    } catch(err) {
-        console.log(err.message)
-        res.status(500).json({ message: err.message})
-    }
-})
+app.get("/product", async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.status(200).json(products);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //Get products by id (findById())
-app.get("/product/:id", async(req, res) => {
-    try {
-        const {id} = req.params;
-        const product = await Product.findById(id);
-        res.status(200).json(product)
-        
-    } catch(err) {
-        console.log(err.message)
-        res.status(500).json({ message: err.message})
-    }
-})
-
+app.get("/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.status(200).json(product);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //Posting data to MongoDB Database by using try and catch and sending status codes to the page
 
-app.post("/product", async(req, res) => {
-  try{
-    const product = await Product.create(req.body)
+app.post("/product", async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
     res.status(200).json({ product });
-    
-  }catch(err){
-    console.log(err.message)
-    res.status(500).json({ message: err.message})
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//update a product
+app.put("/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+
+    //this is to check if we cannot find the product in the database
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `Cannot find any product with ID ${id}` });
+    }
+
+    res.status(200).json(product);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
