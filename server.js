@@ -58,6 +58,7 @@ app.post("/product", async (req, res) => {
 //update a product
 app.put("/product/:id", async (req, res) => {
   try {
+    //before updating
     const { id } = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body);
 
@@ -68,12 +69,35 @@ app.put("/product/:id", async (req, res) => {
         .json({ message: `Cannot find any product with ID ${id}` });
     }
 
+    //this is for the updated product
+    const updatedProduct = await Product.findByIdAndUpdate(id)
     res.status(200).json(product);
   } catch (err) {
     console.log(err.message);
     res.status(500).json({ message: err.message });
   }
 });
+
+
+app.delete("/product/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndDelete(id);
+
+        //this is to check if the there is no id present on the database this if statement will run
+        if(!product){
+            return res
+            .status(404)
+            .json({ message: `Cannot find any product with ID ${id}`});
+        }
+
+        res.status(200).json(product)
+
+    } catch(err) {
+        console.log(err.message);
+        res.status(500).json({ message: err.message });
+    }
+})
 
 //connecting to mongoDB database and listening to port (whatever that is stored in the .env or default 8000 and the server cannot connect to the server it will log the error message)
 mongoose
