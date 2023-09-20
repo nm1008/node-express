@@ -1,3 +1,5 @@
+//this is the structure of the document needed inorder to post to the DB
+
 const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema(
@@ -19,7 +21,7 @@ const productSchema = mongoose.Schema(
             type: String,
             required: false,
         }
-    }
+    },
     {
         timestamps: true
     }
