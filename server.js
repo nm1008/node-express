@@ -1,6 +1,9 @@
+// importing express, mongoose and dotenv
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
+
+//DB URL from dotenv so that the server can connect to mongoDB
 const uri = process.env.DB;
 const app = express();
 
@@ -10,6 +13,7 @@ app.get("/", (req, res) => {
   console.log("get");
   res.send("Hi");
 });
+
 
 mongoose
   .connect(uri)
@@ -21,5 +25,4 @@ mongoose
   })
   .catch((err) => {
     console.log(err);
-    console.log("not connected");
   });
